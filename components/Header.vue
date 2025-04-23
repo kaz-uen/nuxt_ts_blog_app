@@ -14,5 +14,5 @@
     </div>
   </header>
 </template>
-<styles scope>
+<styles scoped>
 </styles>
