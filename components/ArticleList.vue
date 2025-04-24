@@ -49,7 +49,7 @@ onMounted(() => {
         <p>By taro, Published on {{ new Date(post.createdAt).toLocaleDateString() }}</p>
         <div>
           <NuxtLink :to="{name: 'articles-id', params: {id: post.id}}">
-            {{ post.content }}
+            {{ post.content.length > 5 ? post.content.slice(0, 10) + '...' : post.content }}
           </NuxtLink>
         </div>
         <NuxtLink :to="{name: 'articles-id', params: {id: post.id}}">続きを読む</NuxtLink>
