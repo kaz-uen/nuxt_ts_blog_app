@@ -9,7 +9,7 @@
     </div>
     <div>
       <nav>
-        <!-- <NuxtLink :to="{name: 'articles-new'}">記事を書く</NuxtLink> -->
+        <NuxtLink :to="{name: 'articles-new'}">記事を書く</NuxtLink>
       </nav>
     </div>
   </header>
