@@ -30,4 +30,8 @@
 .navLink:hover {
   opacity: 0.7;
 }
+.nav-link:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
 </style>

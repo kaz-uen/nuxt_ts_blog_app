@@ -10,6 +10,6 @@
 <style scoped>
 .inner {
   max-width: 1200px;
-  margin-inline: auto;;
+  margin-inline: auto;
 }
 </style>
