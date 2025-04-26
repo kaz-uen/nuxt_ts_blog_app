@@ -1,18 +1,33 @@
 <script setup lang="ts">
 </script>
 <template>
-  <header>
-    <div>
-      <h1>
-        <NuxtLink :to="{name: 'index'}">Nuxt3 Blog</NuxtLink>
-      </h1>
-    </div>
-    <div>
-      <nav>
-        <NuxtLink :to="{name: 'articles-new'}">記事を書く</NuxtLink>
-      </nav>
-    </div>
+  <header class="header">
+    <h1 class="heading">
+      <NuxtLink :to="{name: 'index'}">Nuxt3 Blog</NuxtLink>
+    </h1>
+    <nav class="nav">
+      <NuxtLink :to="{name: 'articles-new'}" class="navLink">記事を書く</NuxtLink>
+    </nav>
   </header>
 </template>
-<styles scoped>
-</styles>
+<style scoped>
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+}
+.heading {
+  font-size: 24px;
+}
+.navLink {
+  text-decoration: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background-color: orange;
+  transition: all 0.3s;
+}
+.navLink:hover {
+  opacity: 0.7;
+}
+</style>
