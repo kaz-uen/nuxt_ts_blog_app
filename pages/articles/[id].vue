@@ -6,8 +6,13 @@ console.log(route);
   <div>
     <h1>記事詳細</h1>
     <ArticleDetail />
-    <div>
+    <div class="linkContainer">
       <NuxtLink :to="{name: 'index'}">記事一覧に戻る</NuxtLink>
     </div>
   </div>
 </template>
+<style scoped>
+.linkContainer {
+  text-align: center;
+}
+</style>
