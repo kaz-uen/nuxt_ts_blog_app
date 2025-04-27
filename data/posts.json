@@ -4,19 +4,29 @@
       "id": "next.js13-udemy",
       "title": "json-server",
       "content": "ああああああああああああああああああ",
-      "createdAt": "2022/07/14"
+      "author": "Taro",
+      "createdAt": "2025-04-18T13:22:20.579388+00:00"
     },
     {
       "id": "next.js14-udemy",
       "title": "json-server",
       "content": "いいいいいいいいいいいいいいいいいいい",
-      "createdAt": "2022/07/16"
+      "author": "宇宙人",
+      "createdAt": "2025-04-20T13:22:20.579388+00:00"
     },
     {
       "id": "next.js15-udemy",
       "title": "json-server",
       "content": "ううううううううううううううううううううう",
-      "createdAt": "2022/07/18"
+      "author": "山田",
+      "createdAt": "2025-04-23T13:22:20.579388+00:00"
+    },
+    {
+      "id": "id-1234",
+      "title": "タイトル",
+      "content": "テキスト",
+      "author": "Taro",
+      "createdAt": "2025-04-25T22:58:02.272Z"
     }
   ]
 }

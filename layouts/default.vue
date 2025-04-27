@@ -4,8 +4,8 @@
     <main>
       <slot />
     </main>
-    <Footer />
   </div>
+  <Footer />
 </template>
 <style scoped>
 .inner {
