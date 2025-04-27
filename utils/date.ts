@@ -5,13 +5,13 @@
  * @returns フォーマットされた日本語の日付文字列（例: "2024年3月20日"）
  */
 export const formatDate = (dateString: string): string => {
-  if (!dateString) return 'No date provided';
+  if (!dateString) return '日付なし';
 
   // 文字列から Date オブジェクトを生成
   const date = new Date(dateString);
 
   // 無効な日付チェック
-  if (Number.isNaN(date.getTime())) return 'Invalid date';
+  if (Number.isNaN(date.getTime())) return '無効な日付';
 
   const year = date.getFullYear();
   const month = date.getMonth() + 1; // getMonth()は0から始まるため+1
