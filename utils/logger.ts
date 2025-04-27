@@ -24,8 +24,10 @@ export function logger(
   options: LogOptions = {}
 ) {
   const { level = 'error', context, extra } = options;
-  const timestamp = new Date().toISOString();
-  let logMessage = `[${timestamp}] [${level.toUpperCase()}]`;
+  const now = new Date();
+  const timestamp = now.toISOString();
+  const readableTimestamp = now.toLocaleString();
+  let logMessage = `[${readableTimestamp}] [${timestamp}] [${level.toUpperCase()}]`;
 
   if (context) logMessage += ` [${context}]`;
   logMessage += ` ${message}`;
@@ -36,12 +38,20 @@ export function logger(
     logMessage += `\n  message: ${error.message}`;
     logMessage += `\n  stack: ${error.stack}`;
   } else if (error) {
-    logMessage += `\n  error: ${JSON.stringify(error)}`;
+    try {
+      logMessage += `\n  error: ${JSON.stringify(error)}`;
+    } catch (e) {
+      logMessage += `\n  error: [シリアライズできないオブジェクト]`;
+    }
   }
 
   // 追加情報
   if (extra) {
-    logMessage += `\n  extra: ${JSON.stringify(extra)}`;
+    try {
+      logMessage += `\n  extra: ${JSON.stringify(extra)}`;
+    } catch (e) {
+      logMessage += `\n  extra: [シリアライズできないオブジェクト]`;
+    }
   }
 
   // 本番環境で外部サービス連携やファイル出力に拡張可能
@@ -50,14 +60,17 @@ export function logger(
     // sendToSentry(logMessage);
   }
 
-  // サーバーサイド/クライアントサイドで出力先を分ける
-  if (process.server) {
-    // サーバー側はconsole.errorやファイル出力
-    // eslint-disable-next-line no-console
-    console.error(logMessage);
-  } else {
-    // クライアント側はconsole.error
-    // eslint-disable-next-line no-console
-    console.error(logMessage);
+  // レベルに応じたログメソッドを使用
+  // eslint-disable-next-line no-console
+  switch (level) {
+    case 'info':
+      console.info(logMessage);
+      break;
+    case 'warn':
+      console.warn(logMessage);
+      break;
+    case 'error':
+      console.error(logMessage);
+      break;
   }
 }
