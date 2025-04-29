@@ -1,42 +1,11 @@
 <script setup lang="ts">
 import type { Article } from '@/types';
 import { formatDate } from '@/utils/date';
-import { getSupabaseClient } from '@/utils/supabase';
-
-// APIのベースURLを環境変数から取得
-const config = useRuntimeConfig();
-/**
- * useRuntimeConfig()
- *
- * useRuntimeConfig()は、Nuxt 3（およびNuxt Bridge）で提供されている組み込みのコンポジションAPIフックです。
- * このメソッドを使うことで、nuxt.config.tsのruntimeConfigで定義したランタイム設定値（環境変数など）を、サーバーサイド・クライアントサイド両方で取得できます。
- *
- * 主な特徴
- * - サーバーサイド・クライアントサイド両方で利用可能
- * - runtimeConfigのpublicに定義した値はクライアントサイドでも取得可能
- * - runtimeConfigの直下（public以外）はサーバーサイドのみで取得可能
- *
- * 使い方例
- * const config = useRuntimeConfig();
- * console.log(config.public.apiBaseURL); // クライアント・サーバー両方で取得可能
- * console.log(config.supabaseUrl);       // サーバーサイドのみ取得可能
- *
- * どんなときに使う？
- * - APIのベースURLや外部サービスのキーなど、環境ごとに切り替えたい値を取得したいとき
- * - サーバーサイドレンダリングや静的生成時にも安全に値を使いたいとき
- *
- * 公式：https://nuxt.com/docs/guide/going-further/runtime-config
- */
 
 const posts = ref<Article[]>([]);
 const error = ref<string | null>(null);
 const loading = ref<boolean>(true);
 
-// SupabaseのURLとAPIキーをランタイム設定から取得
-const supabaseURL = config.public.supabaseUrl;
-const supabaseKey = config.public.supabaseKey;
-// Supabaseクライアントを生成
-const supabase = getSupabaseClient(supabaseURL, supabaseKey);
 // ローカルAPIのURL（Supabaseで失敗した場合のフォールバック用）
 const localURL = 'http://localhost:3001';
 
@@ -44,11 +13,19 @@ const localURL = 'http://localhost:3001';
 async function getPosts() {
   // まずはSupabaseから取得
   try {
-    // postsテーブルから全件取得
-    const { data, error: supabaseError } = await supabase.from('posts').select('*');
-    if (supabaseError) throw supabaseError;
-    if (!data) throw new Error('Supabaseからデータを取得できませんでした');
-    posts.value = data;
+    // postsテーブルからデータを取得
+    const { data, error: fetchError } = await useFetch<Article[]>('/api/posts');
+
+    // エラーチェック
+    if (fetchError.value) {
+      throw new Error(fetchError.value.message);
+    }
+
+    if (!data.value) {
+      throw new Error('データを取得できませんでした');
+    }
+
+    posts.value = data.value;
   } catch(e) {
     // Supabaseで失敗した場合、ローカルAPIから再取得
     try {
@@ -65,6 +42,7 @@ async function getPosts() {
     loading.value = false;
   }
 }
+getPosts();
 
 // 投稿の内容を適切な長さに切り詰める関数
 const truncateContent = (content: string, maxLength: number = 100) => {
@@ -72,10 +50,6 @@ const truncateContent = (content: string, maxLength: number = 100) => {
   return `${content.slice(0, maxLength)}...`;
 };
 
-onMounted(() => {
-  // コンポーネントのマウント時に投稿データを取得
-  getPosts();
-})
 </script>
 
 <template>
