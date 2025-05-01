@@ -14,7 +14,10 @@ async function getPosts() {
   // まずはSupabaseから取得
   try {
     // postsテーブルからデータを取得
-    const { data, error: fetchError } = await useFetch<Article[]>('/api/posts');
+    const { data, error: fetchError, pending } = await useFetch<Article[]>('/api/posts');
+
+    // loadingステートをuseFetchのpendingと同期
+    loading.value = pending.value;
 
     // エラーチェック
     if (fetchError.value) {

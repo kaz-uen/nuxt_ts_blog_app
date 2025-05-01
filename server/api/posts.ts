@@ -1,4 +1,5 @@
 import { getSupabaseClient } from "@/utils/supabase";
+import type { Article } from '@/types';
 import { defineEventHandler, createError } from "h3";
 
 /**
@@ -6,7 +7,6 @@ import { defineEventHandler, createError } from "h3";
  * GET /api/posts
  */
 export default defineEventHandler(async (event) => {
-  console.log('run defineEventHandler')
 
   try {
     // APIのベースURLを環境変数から取得
@@ -62,7 +62,7 @@ export default defineEventHandler(async (event) => {
     }
 
     // 正常にデータを返却
-    return data;
+    return data as Article[];
 
   } catch(e) {
     // 予期せぬエラーの場合
