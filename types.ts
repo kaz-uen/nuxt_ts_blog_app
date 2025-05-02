@@ -5,4 +5,5 @@ export type Article = {
   createdAt: string;
   author?: string;
   thumbnail?: string;
+  category?: string;
 }

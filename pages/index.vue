@@ -17,16 +17,7 @@
         <h3>Category</h3>
         <ul>
           <li>
-            <a href="">Technology</a>
-          </li>
-          <li>
-            <a href="">Technology</a>
-          </li>
-          <li>
-            <a href="">Technology</a>
-          </li>
-          <li>
-            <a href="">Technology</a>
+            <NuxtLink :to="'/articles/category/technology'">Technology</NuxtLink>
           </li>
         </ul>
       </div>
