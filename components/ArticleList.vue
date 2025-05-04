@@ -10,7 +10,7 @@ const loading = ref<boolean>(true);
 const localURL = 'http://localhost:3001';
 
 // 渡ってくるcategory propsを受け取る
-const { category } = defineProps(['category']);
+const { category } = defineProps<{ category?: string }>();
 
 // フィルタされた投稿データ
 // この時点ではpostsは空配列なので、filterPostsも空配列を返す
@@ -79,7 +79,6 @@ const truncateContent = (content: string, maxLength: number = 100) => {
   if (content.length <= maxLength) return content;
   return `${content.slice(0, maxLength)}...`;
 };
-
 </script>
 
 <template>
