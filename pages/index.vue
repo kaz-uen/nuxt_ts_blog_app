@@ -17,7 +17,7 @@
         <h3>Category</h3>
         <ul>
           <li>
-            <NuxtLink :to="'/articles/category/technology'">Technology</NuxtLink>
+            <NuxtLink :to="{name: 'articles-category-category', params: {category: 'technology'}}">Technology</NuxtLink>
           </li>
         </ul>
       </div>
