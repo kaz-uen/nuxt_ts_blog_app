@@ -9,7 +9,26 @@ const loading = ref<boolean>(true);
 // ローカルAPIのURL（Supabaseで失敗した場合のフォールバック用）
 const localURL = 'http://localhost:3001';
 
+// 渡ってくるcategory propsを受け取る
+const { category } = defineProps<{ category?: string }>();
+
+// フィルタされた投稿データ
+// この時点ではpostsは空配列なので、filterPostsも空配列を返す
+const filterPosts = computed(() => {
+  // カテゴリが指定されていない場合は全ての投稿を返す
+  if (!category) return posts.value;
+
+  return posts.value.filter((post) => post.category === category);
+  /**
+   * <遅延評価（Lazy Evaluation）>
+   * - 計算プロパティは「遅延評価」という特徴を持っています
+   * - これは、実際に値が必要になるまで計算が実行されないということを意味します
+   * - 最初の定義時には計算は行われず、実際に値が参照されたときに初めて計算が実行されます
+   */
+});
+
 // 投稿データの取得
+// getPostsが実行されてpostsの値が更新されると、filterPostsも自動的に更新される
 async function getPosts() {
   // まずはSupabaseから取得
   try {
@@ -28,7 +47,8 @@ async function getPosts() {
       throw new Error('データを取得できませんでした');
     }
 
-    posts.value = data.value;
+    posts.value = data.value; // ここでpostsが更新される
+    // この更新により、filterPostsも自動的に再計算される
   } catch(e) {
     // Supabaseで失敗した場合、ローカルAPIから再取得
     try {
@@ -46,13 +66,19 @@ async function getPosts() {
   }
 }
 getPosts();
+/**
+ * <実行の流れ>
+ * - filterPostsが定義された時点では、postsは空配列です
+ * - その後getPostsが実行され、posts.valueに新しい値が代入されます
+ * - この値の変更をVueのリアクティビティシステムが検知し、filterPostsの再計算をトリガーします
+ * - その結果、最新のpostsの値に基づいてフィルタリングが行われます
+ */
 
 // 投稿の内容を適切な長さに切り詰める関数
 const truncateContent = (content: string, maxLength: number = 100) => {
   if (content.length <= maxLength) return content;
   return `${content.slice(0, maxLength)}...`;
 };
-
 </script>
 
 <template>
@@ -70,12 +96,14 @@ const truncateContent = (content: string, maxLength: number = 100) => {
     </div>
 
     <!-- 投稿がない場合の表示 -->
-    <div v-else-if="posts.length === 0" class="no-posts">
-      <p>投稿がありません</p>
+    <!-- <div v-else-if="posts.length === 0" class="no-posts"> -->
+    <div v-else-if="filterPosts.length === 0" class="no-posts">
+      <p>{{ category ? `${category}カテゴリーの投稿はありません` : '投稿がありません' }}</p>
     </div>
 
     <!-- 投稿一覧の表示 -->
-    <article v-else v-for="post in posts" :key="post.id" class="article-card">
+    <!-- <article v-else v-for="post in posts" :key="post.id" class="article-card"> -->
+    <article v-else v-for="post in filterPosts" :key="post.id" class="article-card">
       <!-- <NuxtLink :to="{name: 'articles-id', params: {id: post.id}}" class="article-image"> -->
       <NuxtLink :to="`/articles/${post.id}`" class="article-image">
         <!-- ↓publicフォルダはビルド時に特別な扱いを受けるため、/publicを含めないパスで参照 -->
@@ -93,7 +121,7 @@ const truncateContent = (content: string, maxLength: number = 100) => {
           <NuxtLink :to="`/articles/${post.id}`">{{ post.title }}</NuxtLink>
         </h2>
         <p class="article-meta">
-          By {{ post.author || 'Unknown' }} | {{ formatDate(post.createdAt) }}
+          {{ post.category || 'No Category' }} | By {{ post.author || 'Unknown' }} | {{ formatDate(post.createdAt) }}
         </p>
         <div class="article-excerpt">
             {{ truncateContent(post.content) }}
